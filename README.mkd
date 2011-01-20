@@ -11,11 +11,18 @@ A basic CRUD admin interface for Django+MongoEngine, very similar to `django.con
   - [MongoEngine][2] (0.4)
   - [django-mongoforms][3]
 
-***TODO***
+***Todo:***
 
   - Changelist pagination
   - `mongoengine.django.auth.User` password form
+  - Better documentation
   - ... Probably lots more
+
+**Caution:**
+
+I have not yet verified that this works with complicated field types, such as
+ListField, DictField, EmbeddedDocumentField, etc. I have a feeling these might
+not work, but who knows?
 
 ## Example:
 
@@ -56,7 +63,8 @@ A basic CRUD admin interface for Django+MongoEngine, very similar to `django.con
 
 **MongoAdmin.form**
 
-Similar to `ModelAdmin.form`, but a mongoform. Must inherit `mongoadmin.MongoAdminForm`.
+Similar to `ModelAdmin.form`, but a mongoform. Must inherit
+`mongoadmin.MongoAdminForm`.
 
 *Default: `mongoadmin.MongoAdminForm`*
 
@@ -72,7 +80,8 @@ Used to visually categorize documents on the admin index.
 
 **MongoAdmin.list_items**
 
-Similar to `ModelAdmin.list_display`. Each item may be an attribute or method on `mongoengine.Document` or `mongoadmin.MongoAdmin`.
+Similar to `ModelAdmin.list_display`. Each item may be an attribute or method
+on `mongoengine.Document` or `mongoadmin.MongoAdmin`.
 
 *Default: ['\__unicode\__']*
 
