@@ -1,0 +1,100 @@
+# MongoAdmin
+A basic CRUD admin interface for Django+MongoEngine, very similar to `django.contrib.admin`.
+
+  - **Author**: Derek Payton ([http://www.dmpayton.com][0])
+  - **Version**: 0.1a
+  - **License**: MIT
+
+***Requirements:***
+
+  - [Django][1] (1.2-ish, untested with 1.1)
+  - [MongoEngine][2] (0.4)
+  - [django-mongoforms][3]
+
+***TODO***
+
+  - Changelist pagination
+  - `mongoengine.django.auth.User` password form
+  - ... Probably lots more
+
+## Example:
+
+**urls.py**
+
+    import mongoadmin
+    from django.conf.urls.defaults import *
+
+    mongoadmin.autodiscover('admin')
+
+    urlpatterns += patterns('',
+        ## ... your URLs here
+        url(r'^mongo-admin/', include(mongoadmin.site.urls, namespace='mongoadmin')),
+    )
+
+
+**yourapp/admin.py**
+
+    import mongoadmin
+    from mongoengine.django.auth import User
+
+    class UserAdmin(mongoadmin.MongoAdmin):
+        group = 'Accounts'
+        list_items = ('username', 'email', 'is_active', 'is_staff')
+
+        def get_form(self, *args, **kwargs):
+            form = super(UserAdmin, self).get_form(*args, **kwargs)
+            form.fields['username'].required = True
+            form.fields['email'].required = True
+            return form
+
+    # mongoadmin.site.register(User) # With or without the admin
+    mongoadmin.site.register(User, UserAdmin)
+
+# Documentation
+
+## mongoadmin.MongoAdmin
+
+**MongoAdmin.form**
+
+Similar to `ModelAdmin.form`, but a mongoform. Must inherit `mongoadmin.MongoAdminForm`.
+
+*Default: `mongoadmin.MongoAdminForm`*
+
+----------
+
+**MongoAdmin.group**
+
+Used to visually categorize documents on the admin index.
+
+*Default: "Documents"*
+
+----------
+
+**MongoAdmin.list_items**
+
+Similar to `ModelAdmin.list_display`. Each item may be an attribute or method on `mongoengine.Document` or `mongoadmin.MongoAdmin`.
+
+*Default: ['\__unicode\__']*
+
+----------
+
+**mongoadmin.verbose_name**
+
+Similar to `Model._meta.verbose_name`.
+
+*Default: ModelAdmin.model._class_name*
+
+----------
+
+**mongoadmin.verbose_name_plural**
+
+Similar to `Model._meta.verbose_name_plural`.
+
+*Default: MongoAdmin.verbose_name + 's'*
+
+----------
+
+  [0]: http://www.dmpayton.com
+  [1]: http://www.djangoproject.com
+  [2]: http://www.mongoengine.org
+  [3]: https://github.com/stephrdev/django-mongoforms

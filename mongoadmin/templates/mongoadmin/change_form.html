@@ -1,0 +1,76 @@
+{% extends "mongoadmin/base.html" %}
+{% load i18n admin_modify adminmedia %}
+
+{% block extrahead %}{{ block.super }}
+{% url admin:jsi18n as jsi18nurl %}
+<script type="text/javascript" src="{% url mongoadmin:jsi18n %}"></script>
+{{ form.media }}
+{% endblock %}
+
+{% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% admin_media_prefix %}css/forms.css" />{% endblock %}
+
+{% block coltype %}{% if ordered_objects %}colMS{% else %}colM{% endif %}{% endblock %}
+
+{# {% block bodyclass %}{{ opts.app_label }}-{{ opts.object_name.lower }} change-form{% endblock %} #}
+
+{% block breadcrumbs %}{% if not is_popup %}
+<div class="breadcrumbs">
+     <a href="{% url mongoadmin:index %}">{% trans "Home" %}</a>
+     &rsaquo; <a href="{% url mongoadmin:changelist collection %}">{{ admin.verbose_name_plural|capfirst }}</a>
+     &rsaquo; {% if add %}{% trans "Add" %} {{ admin.verbose_name }}{% else %}{{ document|truncatewords:"18" }}{% endif %}
+</div>
+{% endif %}{% endblock %}
+
+{% block content %}
+<div id="content-main">
+    {% block object-tools %}
+        {% if change %}
+          <ul class="object-tools">
+          {% if document.get_absolute_url %}<li><a href="{{ document.get_absolute_url }}" class="viewsitelink">{% trans "View on site" %}</a></li>{% endif%}
+          </ul>
+        {% endif %}
+    {% endblock %}
+<form {% if has_file_field %}enctype="multipart/form-data" {% endif %}action="{{ request.path }}" method="post" id="{{ admin.model_name }}_form">{% csrf_token %}
+<div>
+{% if form.errors %}
+    <p class="errornote">
+    {% blocktrans count form.errors|length as counter %}Please correct the error below.{% plural %}Please correct the errors below.{% endblocktrans %}
+    </p>
+    {{ form.non_field_errors }}
+{% endif %}
+
+<fieldset class="module aligned {{ fieldset.classes }}">
+    <h2>{% if add %}{% trans "Add" %} {{ admin.verbose_name }}{% else %}{{ document|truncatewords:"18" }}{% endif %}</h2>
+    {% for field in form %}
+        <div class="form-row{% if field.errors %} errors{% endif %}">
+            {{ field.errors }}
+            <div>
+                {% if field.is_checkbox %}
+                    {{ field }}{{ field.label_tag }}
+                {% else %}
+                    {{ field.label_tag }}
+                    {% if field.is_readonly %}
+                        <p>{{ field.contents }}</p>
+                    {% else %}
+                        {{ field }}
+                    {% endif %}
+                {% endif %}
+                {% if field.field.help_text %}
+                    <p class="help">{{ field.field.help_text|safe }}</p>
+                {% endif %}
+            </div>
+        </div>
+    {% endfor %}
+</fieldset>
+
+<div class="submit-row">
+    <input type="submit" value="{% trans 'Save' %}" class="default" name="_save" />
+    {% if change %}<p class="deletelink-box"><a href="{% url mongoadmin:delete collection document.pk|lower %}" class="deletelink">{% trans "Delete" %}</a></p>{% endif %}
+    <input type="submit" value="{% trans 'Save and add another' %}" name="_addanother" />
+    <input type="submit" value="{% trans 'Save and continue editing' %}" name="_continue" />
+</div>
+
+</div>
+</form>
+</div>
+{% endblock %}

@@ -1,0 +1,58 @@
+{% extends "mongoadmin/base.html" %}
+{% load adminmedia admin_list i18n %}
+
+{% block extrastyle %}
+    {{ block.super }}
+    <link rel="stylesheet" type="text/css" href="{% admin_media_prefix %}css/changelists.css" />
+{% endblock %}
+
+{% block bodyclass %}change-list{% endblock %}
+
+{% block breadcrumbs %}
+    <div class="breadcrumbs">
+        <a href="{% url mongoadmin:index %}">{% trans "Home" %}</a>
+        &rsaquo; {{ admin.verbose_name_plural|capfirst }}
+    </div>
+{% endblock %}
+
+{% block coltype %}flex{% endblock %}
+
+{% block content %}
+  <div id="content-main">
+    {% block object-tools %}
+        <ul class="object-tools">
+          <li>
+            <a href="add/" class="addlink">
+              {% blocktrans with admin.verbose_name as name %}Add {{ name }}{% endblocktrans %}
+            </a>
+          </li>
+        </ul>
+    {% endblock %}
+    <div class="module" id="changelist">
+<table cellspacing="0" id="result_list">
+    <thead>
+        <tr>
+            {% for header in admin.list_items %}
+            <th>{{ header }}</th>
+            {% endfor %}
+        </tr>
+    </thead>
+    <tbody>
+        {% for document, item_list in document_list %}
+        <tr class="{% cycle 'row1' 'row2' %}">
+            {% for item in item_list %}
+            {% if forloop.first %}
+                <th><a href="{% url mongoadmin:change collection document.pk|lower %}">{{ item }}</a></th>
+            {% else %}
+                <td>{{ item }}</td>
+            {% endif %}
+            {% endfor %}
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+      {#{% block pagination %}{% pagination cl %}{% endblock %}#}
+      </form>
+    </div>
+  </div>
+{% endblock %}

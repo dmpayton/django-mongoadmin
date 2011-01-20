@@ -1,0 +1,6 @@
+{% extends "admin/base_site.html" %}
+{% load i18n %}
+
+{% block userlinks %}
+    <a href="{% url mongoadmin:logout %}">{% trans 'Log out' %}</a>
+{% endblock %}
