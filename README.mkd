@@ -1,6 +1,14 @@
 # MongoAdmin
 A basic CRUD admin interface for Django+MongoEngine, very similar to `django.contrib.admin`.
 
+-----
+
+**THIS APP HAS BEEN DEPRECATED. PLEASE SEE THE POST ON MONGOENGINE-USERS FOR MORE INFORMATION:**
+
+http://groups.google.com/group/mongoengine-users/browse_thread/thread/8c2d52ab02b3c239
+
+-----
+
   - **Author**: Derek Payton ([http://www.dmpayton.com][0])
   - **Version**: 0.1a
   - **License**: MIT
